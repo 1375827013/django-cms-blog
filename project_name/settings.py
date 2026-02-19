@@ -127,6 +127,7 @@ USE_TZ = True
 # 1. 静态资源（开发用的 CSS, JS, 装饰图）
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # 2. 媒体资源（用户上传的图片、附件）
 MEDIA_URL = '/media/'
