@@ -1,0 +1,10 @@
+<h2>学生登录</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">立即登录</button>
+</form>
+
+<p>没有账号？请联系管理员开通。</p>
+
+

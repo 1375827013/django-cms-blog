@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}我的 Django 网站{% endblock %}</title>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <nav style="background: #333; color: white; padding: 10px;">
+        <a href="{% url 'article_list' %}" style="color: white;">首页</a> | 
+
+        {% if user.is_authenticated %}
+            <span>你好，{{ user.username }} 同学！</span> |
+            <a href="{% url 'article_create' %}" style="color: white;">上传笔记</a> |
+            
+            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" style="background: none; border: none; color: white; cursor: pointer; padding: 0; font-size: 16px; font-family: inherit;">退出登录</button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}" style="color: white;">学生登录</a>
+        {% endif %}
+        | <a href="/admin" style="color: white;">后台管理</a>
+    </nav>
+
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <footer style="text-align: center; margin-top: 50px; color: #888;">
+        <p>© 2026 我的博客项目 | 基于 Django 开发</p>
+    </footer>
+
+</body>
+</html>

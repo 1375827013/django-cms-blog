@@ -1,0 +1,34 @@
+/* 🌑 全局暗色背景 */
+body {
+    background-color: #1a1a1a; /* 深灰黑色背景 */
+    color: #e0e0e0;            /* 浅灰色文字，不晃眼 */
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* 🧱 文章卡片和容器也要跟着变暗 */
+.container, .article-item {
+    background-color: #2d2d2d; /* 比背景稍微亮一点的灰色 */
+    color: #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #404040; /* 细微的边框线 */
+}
+
+/* 🔗 链接颜色也要调，不然在黑底上看不清 */
+a {
+    color: #4dabf7; 
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* 导航栏保持深色或调整 */
+.navbar {
+    background-color: #000000;
+    border-bottom: 1px solid #333;
+}

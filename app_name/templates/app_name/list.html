@@ -1,0 +1,16 @@
+
+{% extends 'base.html' %}  {% block title %}我的博客列表{% endblock %} {% block content %} <h1>全部文章</h1>
+    
+    <div class="article-container">
+        {% for article in articles %}
+            <div class="article-item">
+                <h2>{{ article.title }}</h2>
+                <p>{{ article.content }}</p>
+                <small>发布时间：{{ article.created }}</small>
+            </div>
+            <hr>
+        {% empty %}
+            <p>暂无文章</p>
+        {% endfor %}
+    </div>
+{% endblock %}
