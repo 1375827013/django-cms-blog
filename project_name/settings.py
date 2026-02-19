@@ -138,7 +138,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-# 登录成功后，自动跳转到首页
 LOGIN_REDIRECT_URL = '/'
-# 退出登录后，自动跳转到首页
 LOGOUT_REDIRECT_URL = '/'
+
+PYTHONANYWHERE_API_TOKEN = 'f06aaa35de2008e9cb167d193c76fb607cb2cc59'
