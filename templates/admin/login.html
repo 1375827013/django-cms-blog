@@ -32,6 +32,10 @@
         display: none;
     }
     
+    .skip-link {
+        display: none;
+    }
+    
     #branding {
         text-align: center;
         margin-bottom: 30px;
@@ -144,6 +148,26 @@
     .input-icon input {
         padding-left: 42px;
     }
+    
+    #user-tools {
+        display: none;
+    }
+    
+    .breadcrumbs {
+        display: none;
+    }
+    
+    #changelist-filter {
+        display: none;
+    }
+    
+    #changelist-search {
+        display: none;
+    }
+    
+    .module h2 {
+        display: none;
+    }
 </style>
 {% endblock %}
 
@@ -192,6 +216,9 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const skipLinks = document.querySelectorAll('.skip-link');
+    skipLinks.forEach(link => link.remove());
+    
     const urlParams = new URLSearchParams(window.location.search);
     const next = urlParams.get('next');
     if (next && next !== '/admin/') {
