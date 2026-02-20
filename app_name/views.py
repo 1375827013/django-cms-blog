@@ -1,18 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib import messages
 from .forms import StudentProfileForm, CollegePreferenceForm
 from .models import StudentProfile, University, Major, AdmissionScore, CollegePreference
 
 def home(request):
     """高考志愿填报助手首页"""
+    profile = None
     if request.user.is_authenticated:
         try:
             profile = request.user.studentprofile
         except StudentProfile.DoesNotExist:
-            profile = None
-    else:
-        profile = None
+            pass
     
     context = {
         'profile': profile,
@@ -24,6 +23,7 @@ def student_profile_create(request):
     """创建学生档案"""
     try:
         profile = request.user.studentprofile
+        messages.info(request, '您已有档案，可以直接查看')
         return redirect('profile_detail')
     except StudentProfile.DoesNotExist:
         pass
@@ -34,6 +34,7 @@ def student_profile_create(request):
             profile = form.save(commit=False)
             profile.user = request.user
             profile.save()
+            messages.success(request, '档案创建成功！')
             return redirect('home')
     else:
         form = StudentProfileForm()
@@ -46,13 +47,12 @@ def profile_detail(request):
     profile = get_object_or_404(StudentProfile, user=request.user)
     return render(request, 'app_name/profile_detail.html', {'profile': profile})
 
-@login_required
 def university_list(request):
     """大学列表"""
     universities = University.objects.all()
     
-    province_filter = request.GET.get('province')
-    type_filter = request.GET.get('type')
+    province_filter = request.GET.get('province', '')
+    type_filter = request.GET.get('type', '')
     
     if province_filter:
         universities = universities.filter(province=province_filter)
@@ -66,20 +66,20 @@ def university_list(request):
     }
     return render(request, 'app_name/university_list.html', context)
 
-@login_required
 def university_detail(request, pk):
     """大学详情"""
     university = get_object_or_404(University, pk=pk)
-    try:
-        subject_type = request.user.studentprofile.subject_type
-        admission_scores = AdmissionScore.objects.filter(
-            university=university,
-            subject_type=subject_type
-        ).order_by('-year')[:5]
-    except StudentProfile.DoesNotExist:
-        admission_scores = AdmissionScore.objects.filter(
-            university=university
-        ).order_by('-year')[:5]
+    
+    admission_scores = AdmissionScore.objects.filter(university=university)
+    
+    if request.user.is_authenticated:
+        try:
+            subject_type = request.user.studentprofile.subject_type
+            admission_scores = admission_scores.filter(subject_type=subject_type)
+        except StudentProfile.DoesNotExist:
+            pass
+    
+    admission_scores = admission_scores.order_by('-year')[:5]
     
     context = {
         'university': university,
@@ -87,11 +87,10 @@ def university_detail(request, pk):
     }
     return render(request, 'app_name/university_detail.html', context)
 
-@login_required
 def major_list(request):
     """专业列表"""
     majors = Major.objects.all()
-    category_filter = request.GET.get('category')
+    category_filter = request.GET.get('category', '')
     
     if category_filter:
         majors = majors.filter(category=category_filter)
@@ -102,7 +101,6 @@ def major_list(request):
     }
     return render(request, 'app_name/major_list.html', context)
 
-@login_required
 def major_detail(request, pk):
     """专业详情"""
     major = get_object_or_404(Major, pk=pk)
@@ -117,16 +115,15 @@ def recommendation(request):
     try:
         profile = request.user.studentprofile
     except StudentProfile.DoesNotExist:
+        messages.warning(request, '请先创建学生档案')
         return redirect('profile_create')
     
-    # 根据分数推荐大学
     recommended_universities = University.objects.filter(
         admission_scores__province=profile.province,
         admission_scores__subject_type=profile.subject_type,
         admission_scores__min_score__lte=profile.total_score
     ).distinct().order_by('-ranking')[:10]
     
-    # 查看已填报的志愿
     preferences = CollegePreference.objects.filter(
         student=profile
     ).order_by('preference_order')
@@ -144,6 +141,7 @@ def preference_create(request):
     try:
         profile = request.user.studentprofile
     except StudentProfile.DoesNotExist:
+        messages.warning(request, '请先创建学生档案')
         return redirect('profile_create')
     
     if request.method == 'POST':
@@ -152,6 +150,7 @@ def preference_create(request):
             preference = form.save(commit=False)
             preference.student = profile
             preference.save()
+            messages.success(request, '志愿添加成功！')
             return redirect('recommendation')
     else:
         form = CollegePreferenceForm()
@@ -163,4 +162,5 @@ def preference_delete(request, pk):
     """删除志愿"""
     preference = get_object_or_404(CollegePreference, pk=pk, student__user=request.user)
     preference.delete()
+    messages.success(request, '志愿删除成功！')
     return redirect('recommendation')
