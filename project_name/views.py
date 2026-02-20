@@ -20,7 +20,8 @@ def deploy_webhook(request):
         project_dir = '/home/8210232126/django-cms-blog'
         os.chdir(project_dir)
 
-        subprocess.run(['git', 'pull', 'origin', 'main'], check=True, capture_output=True, text=True)
+        subprocess.run(['git', 'fetch', 'origin'], check=True, capture_output=True, text=True)
+        subprocess.run(['git', 'reset', '--hard', 'origin/main'], check=True, capture_output=True, text=True)
 
         venv_python = os.path.join(project_dir, 'myenv', 'bin', 'python')
         subprocess.run([venv_python, '-m', 'pip', 'install', '-r', 'requirements.txt'], check=True)
