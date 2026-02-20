@@ -11,11 +11,11 @@
 <body>
 
     <nav style="background: #333; color: white; padding: 10px;">
-        <a href="{% url 'article_list' %}" style="color: white;">首页</a> | 
+        <a href="{% url 'home' %}" style="color: white;">首页</a> | 
 
         {% if user.is_authenticated %}
             <span>你好，{{ user.username }} 同学！</span> |
-            <a href="{% url 'article_create' %}" style="color: white;">上传笔记</a> |
+            <a href="{% url 'profile_create' %}" style="color: white;">创建档案</a> |
             
             <form action="{% url 'logout' %}" method="post" style="display: inline;">
                 {% csrf_token %}
