@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
-DEPLOY_TOKEN = "X7k9pQ2mR4vL8nJ3wT6yB5eA1cD9fG0h"
+DEPLOY_TOKEN = os.getenv('DEPLOY_TOKEN', '')
 
 @csrf_exempt
 def deploy_webhook(request):

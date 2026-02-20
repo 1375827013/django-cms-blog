@@ -3,9 +3,12 @@ import requests
 from mcp.server import Server
 import mcp.server.stdio
 import mcp.types as types
+from dotenv import load_dotenv
+
+load_dotenv()
 
 DEPLOY_WEBHOOK_URL = "https://8210232126.pythonanywhere.com/deploy/"
-DEPLOY_TOKEN = "X7k9pQ2mR4vL8nJ3wT6yB5eA1cD9fG0h"
+DEPLOY_TOKEN = os.getenv('DEPLOY_TOKEN', '')
 
 async def main():
     server = Server("pythonanywhere-deploy")
