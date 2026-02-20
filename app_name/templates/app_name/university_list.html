@@ -2,140 +2,209 @@
 {% block title %}大学查询 - 高考志愿填报助手{% endblock %}
 {% block content %}
 <div class="container mt-4">
-    <h2 style="margin-bottom: 20px;">🎓 大学查询</h2>
+    <h2 style="margin-bottom: 30px; text-align: center;">🎓 大学查询</h2>
     
-    <div class="card mb-4" style="padding: 20px; background: #f8f9fa; border: none; border-radius: 12px;">
-        <form method="get" class="row align-items-end">
-            <div class="col-md-4 mb-2">
-                <label style="font-weight: 500; margin-bottom: 8px; display: block;">省份筛选</label>
-                <select name="province" class="form-control" style="border-radius: 8px;">
-                    <option value="">全部省份</option>
-                    <optgroup label="直辖市">
-                        <option value="北京" {% if province_filter == '北京' %}selected{% endif %}>北京</option>
-                        <option value="上海" {% if province_filter == '上海' %}selected{% endif %}>上海</option>
-                        <option value="天津" {% if province_filter == '天津' %}selected{% endif %}>天津</option>
-                        <option value="重庆" {% if province_filter == '重庆' %}selected{% endif %}>重庆</option>
-                    </optgroup>
-                    <optgroup label="华北地区">
-                        <option value="河北" {% if province_filter == '河北' %}selected{% endif %}>河北</option>
-                        <option value="山西" {% if province_filter == '山西' %}selected{% endif %}>山西</option>
-                        <option value="内蒙古" {% if province_filter == '内蒙古' %}selected{% endif %}>内蒙古</option>
-                    </optgroup>
-                    <optgroup label="东北地区">
-                        <option value="辽宁" {% if province_filter == '辽宁' %}selected{% endif %}>辽宁</option>
-                        <option value="吉林" {% if province_filter == '吉林' %}selected{% endif %}>吉林</option>
-                        <option value="黑龙江" {% if province_filter == '黑龙江' %}selected{% endif %}>黑龙江</option>
-                    </optgroup>
-                    <optgroup label="华东地区">
-                        <option value="江苏" {% if province_filter == '江苏' %}selected{% endif %}>江苏</option>
-                        <option value="浙江" {% if province_filter == '浙江' %}selected{% endif %}>浙江</option>
-                        <option value="安徽" {% if province_filter == '安徽' %}selected{% endif %}>安徽</option>
-                        <option value="福建" {% if province_filter == '福建' %}selected{% endif %}>福建</option>
-                        <option value="江西" {% if province_filter == '江西' %}selected{% endif %}>江西</option>
-                        <option value="山东" {% if province_filter == '山东' %}selected{% endif %}>山东</option>
-                    </optgroup>
-                    <optgroup label="华中地区">
-                        <option value="河南" {% if province_filter == '河南' %}selected{% endif %}>河南</option>
-                        <option value="湖北" {% if province_filter == '湖北' %}selected{% endif %}>湖北</option>
-                        <option value="湖南" {% if province_filter == '湖南' %}selected{% endif %}>湖南</option>
-                    </optgroup>
-                    <optgroup label="华南地区">
-                        <option value="广东" {% if province_filter == '广东' %}selected{% endif %}>广东</option>
-                        <option value="广西" {% if province_filter == '广西' %}selected{% endif %}>广西</option>
-                        <option value="海南" {% if province_filter == '海南' %}selected{% endif %}>海南</option>
-                    </optgroup>
-                    <optgroup label="西南地区">
-                        <option value="四川" {% if province_filter == '四川' %}selected{% endif %}>四川</option>
-                        <option value="贵州" {% if province_filter == '贵州' %}selected{% endif %}>贵州</option>
-                        <option value="云南" {% if province_filter == '云南' %}selected{% endif %}>云南</option>
-                        <option value="西藏" {% if province_filter == '西藏' %}selected{% endif %}>西藏</option>
-                    </optgroup>
-                    <optgroup label="西北地区">
-                        <option value="陕西" {% if province_filter == '陕西' %}selected{% endif %}>陕西</option>
-                        <option value="甘肃" {% if province_filter == '甘肃' %}selected{% endif %}>甘肃</option>
-                        <option value="青海" {% if province_filter == '青海' %}selected{% endif %}>青海</option>
-                        <option value="宁夏" {% if province_filter == '宁夏' %}selected{% endif %}>宁夏</option>
-                        <option value="新疆" {% if province_filter == '新疆' %}selected{% endif %}>新疆</option>
-                    </optgroup>
-                    <optgroup label="港澳台">
-                        <option value="香港" {% if province_filter == '香港' %}selected{% endif %}>香港</option>
-                        <option value="澳门" {% if province_filter == '澳门' %}selected{% endif %}>澳门</option>
-                        <option value="台湾" {% if province_filter == '台湾' %}selected{% endif %}>台湾</option>
-                    </optgroup>
-                </select>
-            </div>
-            <div class="col-md-4 mb-2">
-                <label style="font-weight: 500; margin-bottom: 8px; display: block;">办学类型</label>
-                <select name="type" class="form-control" style="border-radius: 8px;">
-                    <option value="">全部类型</option>
-                    <option value="985" {% if type_filter == '985' %}selected{% endif %}>985工程</option>
-                    <option value="211" {% if type_filter == '211' %}selected{% endif %}>211工程</option>
-                    <option value="双一流" {% if type_filter == '双一流' %}selected{% endif %}>双一流</option>
-                    <option value="普通本科" {% if type_filter == '普通本科' %}selected{% endif %}>普通本科</option>
-                    <option value="专科" {% if type_filter == '专科' %}selected{% endif %}>专科</option>
-                </select>
-            </div>
-            <div class="col-md-4 mb-2">
-                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 10px; border-radius: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
-                    <i class="fas fa-search"></i> 筛选查询
-                </button>
+    <div style="background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 30px;">
+        <form method="get">
+            <div class="row">
+                <div class="col-md-5 mb-3">
+                    <label style="font-weight: 600; margin-bottom: 10px; display: block; color: #333;">📍 省份筛选</label>
+                    <select name="province" class="form-control" style="border-radius: 10px; border: 2px solid #e8e8e8; padding: 12px 16px; font-size: 15px; transition: all 0.3s;">
+                        <option value="">全部省份</option>
+                        <optgroup label="直辖市">
+                            <option value="北京" {% if province_filter == '北京' %}selected{% endif %}>北京</option>
+                            <option value="上海" {% if province_filter == '上海' %}selected{% endif %}>上海</option>
+                            <option value="天津" {% if province_filter == '天津' %}selected{% endif %}>天津</option>
+                            <option value="重庆" {% if province_filter == '重庆' %}selected{% endif %}>重庆</option>
+                        </optgroup>
+                        <optgroup label="华北地区">
+                            <option value="河北" {% if province_filter == '河北' %}selected{% endif %}>河北</option>
+                            <option value="山西" {% if province_filter == '山西' %}selected{% endif %}>山西</option>
+                            <option value="内蒙古" {% if province_filter == '内蒙古' %}selected{% endif %}>内蒙古</option>
+                        </optgroup>
+                        <optgroup label="东北地区">
+                            <option value="辽宁" {% if province_filter == '辽宁' %}selected{% endif %}>辽宁</option>
+                            <option value="吉林" {% if province_filter == '吉林' %}selected{% endif %}>吉林</option>
+                            <option value="黑龙江" {% if province_filter == '黑龙江' %}selected{% endif %}>黑龙江</option>
+                        </optgroup>
+                        <optgroup label="华东地区">
+                            <option value="江苏" {% if province_filter == '江苏' %}selected{% endif %}>江苏</option>
+                            <option value="浙江" {% if province_filter == '浙江' %}selected{% endif %}>浙江</option>
+                            <option value="安徽" {% if province_filter == '安徽' %}selected{% endif %}>安徽</option>
+                            <option value="福建" {% if province_filter == '福建' %}selected{% endif %}>福建</option>
+                            <option value="江西" {% if province_filter == '江西' %}selected{% endif %}>江西</option>
+                            <option value="山东" {% if province_filter == '山东' %}selected{% endif %}>山东</option>
+                        </optgroup>
+                        <optgroup label="华中地区">
+                            <option value="河南" {% if province_filter == '河南' %}selected{% endif %}>河南</option>
+                            <option value="湖北" {% if province_filter == '湖北' %}selected{% endif %}>湖北</option>
+                            <option value="湖南" {% if province_filter == '湖南' %}selected{% endif %}>湖南</option>
+                        </optgroup>
+                        <optgroup label="华南地区">
+                            <option value="广东" {% if province_filter == '广东' %}selected{% endif %}>广东</option>
+                            <option value="广西" {% if province_filter == '广西' %}selected{% endif %}>广西</option>
+                            <option value="海南" {% if province_filter == '海南' %}selected{% endif %}>海南</option>
+                        </optgroup>
+                        <optgroup label="西南地区">
+                            <option value="四川" {% if province_filter == '四川' %}selected{% endif %}>四川</option>
+                            <option value="贵州" {% if province_filter == '贵州' %}selected{% endif %}>贵州</option>
+                            <option value="云南" {% if province_filter == '云南' %}selected{% endif %}>云南</option>
+                            <option value="西藏" {% if province_filter == '西藏' %}selected{% endif %}>西藏</option>
+                        </optgroup>
+                        <optgroup label="西北地区">
+                            <option value="陕西" {% if province_filter == '陕西' %}selected{% endif %}>陕西</option>
+                            <option value="甘肃" {% if province_filter == '甘肃' %}selected{% endif %}>甘肃</option>
+                            <option value="青海" {% if province_filter == '青海' %}selected{% endif %}>青海</option>
+                            <option value="宁夏" {% if province_filter == '宁夏' %}selected{% endif %}>宁夏</option>
+                            <option value="新疆" {% if province_filter == '新疆' %}selected{% endif %}>新疆</option>
+                        </optgroup>
+                        <optgroup label="港澳台">
+                            <option value="香港" {% if province_filter == '香港' %}selected{% endif %}>香港</option>
+                            <option value="澳门" {% if province_filter == '澳门' %}selected{% endif %}>澳门</option>
+                            <option value="台湾" {% if province_filter == '台湾' %}selected{% endif %}>台湾</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="col-md-5 mb-3">
+                    <label style="font-weight: 600; margin-bottom: 10px; display: block; color: #333;">🏫 办学类型</label>
+                    <select name="type" class="form-control" style="border-radius: 10px; border: 2px solid #e8e8e8; padding: 12px 16px; font-size: 15px; transition: all 0.3s;">
+                        <option value="">全部类型</option>
+                        <option value="985" {% if type_filter == '985' %}selected{% endif %}>985工程</option>
+                        <option value="211" {% if type_filter == '211' %}selected{% endif %}>211工程</option>
+                        <option value="双一流" {% if type_filter == '双一流' %}selected{% endif %}>双一流</option>
+                        <option value="普通本科" {% if type_filter == '普通本科' %}selected{% endif %}>普通本科</option>
+                        <option value="专科" {% if type_filter == '专科' %}selected{% endif %}>专科</option>
+                    </select>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label style="font-weight: 600; margin-bottom: 10px; display: block; color: transparent;">操作</label>
+                    <button type="submit" style="width: 100%; padding: 12px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+                        查询
+                    </button>
+                </div>
             </div>
         </form>
     </div>
     
+    {% if universities %}
+    <div style="text-align: center; margin-bottom: 20px; color: #666;">
+        共找到 <span style="color: #667eea; font-weight: 600; font-size: 18px;">{{ universities.count }}</span> 所大学
+    </div>
+    {% endif %}
+    
     <div class="row">
         {% for university in universities %}
         <div class="col-md-4 mb-4">
-            <div class="card h-100" style="border-radius: 12px; border: none; box-shadow: 0 2px 12px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
-                <div class="card-body">
-                    <h5 style="font-weight: 600; margin-bottom: 10px;">{{ university.name }}</h5>
-                    <p style="color: #666; margin-bottom: 8px;">
-                        <i class="fas fa-map-marker-alt" style="color: #667eea;"></i> 
+            <div class="university-card" style="background: white; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); overflow: hidden;">
+                <div style="padding: 24px;">
+                    <h5 style="font-weight: 600; margin-bottom: 12px; font-size: 17px;">{{ university.name }}</h5>
+                    <p style="color: #666; margin-bottom: 12px; font-size: 14px;">
+                        <i class="fas fa-map-marker-alt" style="color: #667eea; margin-right: 6px;"></i>
                         {{ university.province }} {{ university.city }}
                     </p>
-                    <p style="margin-bottom: 10px;">
+                    <p style="margin-bottom: 12px;">
                         {% if university.university_type == '985' %}
-                            <span style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px;">985工程</span>
+                            <span class="badge-985">985工程</span>
                         {% elif university.university_type == '211' %}
-                            <span style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px;">211工程</span>
+                            <span class="badge-211">211工程</span>
                         {% elif university.university_type == '双一流' %}
-                            <span style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px;">双一流</span>
+                            <span class="badge-double">双一流</span>
                         {% else %}
-                            <span style="background: #e0e0e0; color: #333; padding: 4px 12px; border-radius: 20px; font-size: 12px;">{{ university.university_type }}</span>
+                            <span class="badge-normal">{{ university.university_type }}</span>
                         {% endif %}
                     </p>
                     {% if university.ranking %}
-                    <p style="color: #888; font-size: 14px; margin-bottom: 15px;">
-                        <i class="fas fa-trophy" style="color: #ffa500;"></i> 全国排名：{{ university.ranking }}
+                    <p style="color: #888; font-size: 13px; margin-bottom: 16px;">
+                        <i class="fas fa-trophy" style="color: #ffa500; margin-right: 6px;"></i>
+                        全国排名：{{ university.ranking }}
                     </p>
+                    {% else %}
+                    <div style="margin-bottom: 16px;"></div>
                     {% endif %}
-                    <a href="{% url 'university_detail' university.pk %}" class="btn btn-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px; padding: 8px 20px;">
-                        查看详情 <i class="fas fa-arrow-right"></i>
+                    <a href="{% url 'university_detail' university.pk %}" class="detail-btn">
+                        查看详情 →
                     </a>
                 </div>
             </div>
         </div>
         {% empty %}
         <div class="col-12">
-            <div class="text-center" style="padding: 60px 20px; background: #f8f9fa; border-radius: 12px;">
-                <i class="fas fa-university" style="font-size: 48px; color: #ccc; margin-bottom: 20px;"></i>
-                <p style="color: #666; font-size: 16px;">暂无符合条件的大学数据</p>
+            <div style="text-align: center; padding: 80px 20px; background: white; border-radius: 16px;">
+                <i class="fas fa-university" style="font-size: 64px; color: #ddd; margin-bottom: 24px;"></i>
+                <p style="color: #666; font-size: 18px; margin-bottom: 8px;">暂无符合条件的大学数据</p>
                 <p style="color: #999; font-size: 14px;">请尝试调整筛选条件</p>
             </div>
         </div>
         {% endfor %}
     </div>
-    
-    {% if universities %}
-    <div class="text-center mt-4" style="color: #666;">
-        <p>共找到 <strong style="color: #667eea;">{{ universities.count }}</strong> 所大学</p>
-    </div>
-    {% endif %}
 </div>
 
 <style>
-.card:hover {
-    transform: translateY(-5px);
+select:focus {
+    outline: none;
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.university-card {
+    transition: box-shadow 0.3s ease;
+}
+
+.university-card:hover {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+
+.badge-985 {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.badge-211 {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.badge-double {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    color: white;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.badge-normal {
+    background: #f0f0f0;
+    color: #666;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.detail-btn {
+    display: inline-block;
+    padding: 10px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.detail-btn:hover {
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 </style>
 {% endblock %}
