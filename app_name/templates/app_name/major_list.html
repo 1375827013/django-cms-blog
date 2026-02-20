@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}专业列表{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>专业查询</h2>
+    
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <form method="get" class="form-inline">
+                <select name="category" class="form-control mr-2">
+                    <option value="">全部类别</option>
+                    <option value="工学" {% if category_filter == '工学' %}selected{% endif %}>工学</option>
+                    <option value="理学" {% if category_filter == '理学' %}selected{% endif %}>理学</option>
+                    <option value="文学" {% if category_filter == '文学' %}selected{% endif %}>文学</option>
+                    <option value="经济学" {% if category_filter == '经济学' %}selected{% endif %}>经济学</option>
+                    <option value="管理学" {% if category_filter == '管理学' %}selected{% endif %}>管理学</option>
+                    <option value="法学" {% if category_filter == '法学' %}selected{% endif %}>法学</option>
+                    <option value="医学" {% if category_filter == '医学' %}selected{% endif %}>医学</option>
+                </select>
+                <button type="submit" class="btn btn-primary">筛选</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="row">
+        {% for major in majors %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5>{{ major.name }}</h5>
+                    <p><span class="badge badge-secondary">{{ major.category }}</span></p>
+                    {% if major.employment_rate %}
+                    <p><small>就业率：{{ major.employment_rate }}%</small></p>
+                    {% endif %}
+                    {% if major.salary_range %}
+                    <p><small>薪资：{{ major.salary_range }}</small></p>
+                    {% endif %}
+                    <a href="{% url 'major_detail' major.pk %}" class="btn btn-sm btn-primary">查看详情</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center">暂无专业数据</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

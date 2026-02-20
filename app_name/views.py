@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .forms import StudentProfileForm, CollegePreferenceForm
 from .models import StudentProfile, University, Major, AdmissionScore, CollegePreference
-from django.db.models import Q, Avg
 
 @login_required
 def home(request):
@@ -69,10 +68,16 @@ def university_list(request):
 def university_detail(request, pk):
     """大学详情"""
     university = get_object_or_404(University, pk=pk)
-    admission_scores = AdmissionScore.objects.filter(
-        university=university,
-        subject_type=request.user.studentprofile.subject_type
-    ).order_by('-year')[:5]
+    try:
+        subject_type = request.user.studentprofile.subject_type
+        admission_scores = AdmissionScore.objects.filter(
+            university=university,
+            subject_type=subject_type
+        ).order_by('-year')[:5]
+    except StudentProfile.DoesNotExist:
+        admission_scores = AdmissionScore.objects.filter(
+            university=university
+        ).order_by('-year')[:5]
     
     context = {
         'university': university,

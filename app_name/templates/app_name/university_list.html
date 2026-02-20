@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}大学列表{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>大学查询</h2>
+    
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <form method="get" class="form-inline">
+                <select name="province" class="form-control mr-2">
+                    <option value="">全部省份</option>
+                    <option value="北京" {% if province_filter == '北京' %}selected{% endif %}>北京</option>
+                    <option value="上海" {% if province_filter == '上海' %}selected{% endif %}>上海</option>
+                    <option value="广东" {% if province_filter == '广东' %}selected{% endif %}>广东</option>
+                    <option value="江苏" {% if province_filter == '江苏' %}selected{% endif %}>江苏</option>
+                    <option value="浙江" {% if province_filter == '浙江' %}selected{% endif %}>浙江</option>
+                </select>
+                <select name="type" class="form-control mr-2">
+                    <option value="">全部类型</option>
+                    <option value="985" {% if type_filter == '985' %}selected{% endif %}>985工程</option>
+                    <option value="211" {% if type_filter == '211' %}selected{% endif %}>211工程</option>
+                    <option value="双一流" {% if type_filter == '双一流' %}selected{% endif %}>双一流</option>
+                    <option value="普通本科" {% if type_filter == '普通本科' %}selected{% endif %}>普通本科</option>
+                </select>
+                <button type="submit" class="btn btn-primary">筛选</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="row">
+        {% for university in universities %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5>{{ university.name }}</h5>
+                    <p><small>{{ university.province }} {{ university.city }}</small></p>
+                    <p><span class="badge badge-info">{{ university.university_type }}</span></p>
+                    {% if university.ranking %}
+                    <p><small>排名：{{ university.ranking }}</small></p>
+                    {% endif %}
+                    <a href="{% url 'university_detail' university.pk %}" class="btn btn-sm btn-primary">查看详情</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center">暂无大学数据</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}志愿推荐{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>推荐大学</h4>
+                </div>
+                <div class="card-body">
+                    {% if profile %}
+                    <div class="alert alert-info">
+                        <p>根据你的分数 <strong>{{ profile.total_score }}分</strong>，为你推荐以下大学：</p>
+                    </div>
+                    
+                    <div class="row">
+                        {% for university in recommended_universities %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>{{ university.name }}</h5>
+                                    <p><small>{{ university.province }} {{ university.city }}</small></p>
+                                    <p><span class="badge badge-info">{{ university.university_type }}</span></p>
+                                    {% if university.ranking %}
+                                    <p><small>排名：{{ university.ranking }}</small></p>
+                                    {% endif %}
+                                    <a href="{% url 'university_detail' university.pk %}" class="btn btn-sm btn-primary">查看详情</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-12">
+                            <p class="text-center">暂无推荐数据，请先完善档案</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <p>请先创建学生档案以获取推荐</p>
+                        <a href="{% url 'profile_create' %}" class="btn btn-primary">创建档案</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>我的志愿</h4>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'preference_create' %}" class="btn btn-success btn-block mb-3">添加志愿</a>
+                    
+                    {% if preferences %}
+                    <div class="list-group">
+                        {% for preference in preferences %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6>第{{ preference.preference_order }}志愿</h6>
+                                    <p class="mb-0"><strong>{{ preference.university.name }}</strong></p>
+                                    {% if preference.major %}
+                                    <small>{{ preference.major.name }}</small>
+                                    {% endif %}
+                                </div>
+                                <form method="post" action="{% url 'preference_delete' preference.pk %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger">删除</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-center text-muted">还没有添加志愿</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

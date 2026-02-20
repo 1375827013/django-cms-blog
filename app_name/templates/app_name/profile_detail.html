@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}我的档案{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h4>我的档案</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>姓名：</strong>{{ profile.name }}</p>
+                    <p><strong>省份：</strong>{{ profile.province }}</p>
+                    <p><strong>科类：</strong>{{ profile.subject_type }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>总分：</strong><span class="badge badge-success">{{ profile.total_score }}分</span></p>
+                    <p><strong>高考年份：</strong>{{ profile.year }}</p>
+                </div>
+            </div>
+            {% if profile.chinese_score %}
+            <div class="row mt-3">
+                <div class="col-md-3">
+                    <p><strong>语文：</strong>{{ profile.chinese_score }}</p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>数学：</strong>{{ profile.math_score }}</p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>英语：</strong>{{ profile.english_score }}</p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>综合：</strong>{{ profile.comprehensive_score }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

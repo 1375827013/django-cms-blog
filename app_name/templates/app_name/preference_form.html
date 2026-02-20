@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}添加志愿{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>添加志愿</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="{{ form.university.id_for_label }}">大学</label>
+                            {{ form.university }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.major.id_for_label }}">专业（可选）</label>
+                            {{ form.major }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.preference_order.id_for_label }}">志愿顺序</label>
+                            {{ form.preference_order }}
+                            <small class="form-text text-muted">1-6，1为第一志愿</small>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="is_adjusted" name="is_adjusted">
+                            <label class="form-check-label" for="is_adjusted">
+                                是否服从调剂
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.notes.id_for_label }}">备注</label>
+                            {{ form.notes }}
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">保存志愿</button>
+                        <a href="{% url 'recommendation' %}" class="btn btn-secondary btn-block mt-2">返回</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
