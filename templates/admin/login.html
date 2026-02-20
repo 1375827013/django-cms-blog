@@ -1,0 +1,226 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    }
+    
+    #container {
+        width: 100%;
+        max-width: 420px;
+        padding: 0 20px;
+    }
+    
+    #content-main {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 40px;
+        margin: 0;
+    }
+    
+    #header {
+        display: none;
+    }
+    
+    #branding {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    #branding h1 {
+        color: #333;
+        font-size: 24px;
+        margin: 0;
+        font-weight: 600;
+    }
+    
+    #branding .logo-icon {
+        font-size: 48px;
+        color: #667eea;
+        margin-bottom: 15px;
+    }
+    
+    #branding .subtitle {
+        color: #666;
+        font-size: 14px;
+        margin-top: 8px;
+    }
+    
+    form {
+        margin: 0;
+    }
+    
+    .form-row {
+        margin-bottom: 20px;
+    }
+    
+    label {
+        display: block;
+        color: #333;
+        font-weight: 500;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+    
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
+    
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .submit-row {
+        margin-top: 30px;
+        padding: 0;
+        background: transparent;
+        border: none;
+    }
+    
+    input[type="submit"] {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    input[type="submit"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .errornote {
+        background: #fff3cd;
+        color: #856404;
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border: none;
+        font-size: 14px;
+    }
+    
+    #footer {
+        display: none;
+    }
+    
+    .password-reset-link {
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .password-reset-link a {
+        color: #667eea;
+        text-decoration: none;
+        font-size: 14px;
+    }
+    
+    .password-reset-link a:hover {
+        text-decoration: underline;
+    }
+    
+    .input-icon {
+        position: relative;
+    }
+    
+    .input-icon i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #999;
+    }
+    
+    .input-icon input {
+        padding-left: 42px;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}
+{% endblock %}
+
+{% block content %}
+<div id="branding">
+    <div class="logo-icon">
+        <i class="fas fa-graduation-cap"></i>
+    </div>
+    <h1>{% trans '高考志愿填报助手' %}</h1>
+    <div class="subtitle">管理后台登录</div>
+</div>
+
+{% if form.errors %}
+<div class="errornote">
+    <i class="fas fa-exclamation-circle"></i> 
+    {% trans "请输入正确的用户名和密码。请注意，用户名和密码区分大小写。" %}
+</div>
+{% endif %}
+
+<form action="{{ app_path }}" method="post" id="login-form">
+    {% csrf_token %}
+    
+    <div class="form-row">
+        <label for="id_username">{% trans '用户名' %}</label>
+        <div class="input-icon">
+            <i class="fas fa-user"></i>
+            <input type="text" name="username" id="id_username" autofocus required placeholder="请输入用户名">
+        </div>
+    </div>
+    
+    <div class="form-row">
+        <label for="id_password">{% trans '密码' %}</label>
+        <div class="input-icon">
+            <i class="fas fa-lock"></i>
+            <input type="password" name="password" id="id_password" required placeholder="请输入密码">
+        </div>
+    </div>
+    
+    <div class="submit-row">
+        <input type="submit" value="{% trans '登 录' %}">
+    </div>
+    
+    <div class="password-reset-link">
+        <a href="{% url 'admin_password_reset' %}">{% trans '忘记密码？' %}</a>
+    </div>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const next = urlParams.get('next');
+    if (next && next !== '/admin/') {
+        const form = document.getElementById('login-form');
+        const nextInput = document.createElement('input');
+        nextInput.type = 'hidden';
+        nextInput.name = 'next';
+        nextInput.value = next;
+        form.appendChild(nextInput);
+    }
+});
+</script>
+{% endblock %}
