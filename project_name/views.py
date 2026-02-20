@@ -29,6 +29,8 @@ def deploy_webhook(request):
 
         subprocess.run([venv_python, 'manage.py', 'collectstatic', '--noinput'], check=True)
 
+        subprocess.run([venv_python, 'create_admin.py'], capture_output=True, text=True)
+
         import requests
         api_url = "https://www.pythonanywhere.com/api/v0/user/8210232126/webapps/8210232126.pythonanywhere.com/reload/"
         headers = {"Authorization": f"Token {settings.PYTHONANYWHERE_API_TOKEN}"}
