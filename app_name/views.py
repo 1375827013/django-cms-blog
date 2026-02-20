@@ -4,12 +4,14 @@ from django.contrib.auth.models import User
 from .forms import StudentProfileForm, CollegePreferenceForm
 from .models import StudentProfile, University, Major, AdmissionScore, CollegePreference
 
-@login_required
 def home(request):
     """高考志愿填报助手首页"""
-    try:
-        profile = request.user.studentprofile
-    except StudentProfile.DoesNotExist:
+    if request.user.is_authenticated:
+        try:
+            profile = request.user.studentprofile
+        except StudentProfile.DoesNotExist:
+            profile = None
+    else:
         profile = None
     
     context = {
