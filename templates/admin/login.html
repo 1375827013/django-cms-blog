@@ -129,21 +129,6 @@
         display: none;
     }
     
-    .password-reset-link {
-        text-align: center;
-        margin-top: 20px;
-    }
-    
-    .password-reset-link a {
-        color: #667eea;
-        text-decoration: none;
-        font-size: 14px;
-    }
-    
-    .password-reset-link a:hover {
-        text-decoration: underline;
-    }
-    
     .input-icon {
         position: relative;
     }
@@ -202,10 +187,6 @@
     
     <div class="submit-row">
         <input type="submit" value="{% trans '登 录' %}">
-    </div>
-    
-    <div class="password-reset-link">
-        <a href="{% url 'admin_password_reset' %}">{% trans '忘记密码？' %}</a>
     </div>
 </form>
 
