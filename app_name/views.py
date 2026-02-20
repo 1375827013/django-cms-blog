@@ -1,110 +1,159 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .forms import ArticleForm
-from .models import Article  # 必须导入 Day 2 定义的模型
-
-import calendar
-from datetime import date
-from django.shortcuts import render
-from django.utils.safestring import mark_safe
-from .models import CalendarEvent
-
-from django.contrib.auth.decorators import login_required
-
-def article_list(request):
-    # 1. 查询逻辑：使用 ORM 语法获取所有文章对象
-    articles = Article.objects.all()
-    
-    # 2. 返回结果：将数据封装在字典中，交给对应的 HTML 模板
-    return render(request, 'app_name/list.html', {'articles': articles})
-
-def article_create(request):
-    # 判断用户是否提交了数据
-    if request.method == "POST":
-        # 将文字数据(POST)和文件数据(FILES)一并交给表单类处理
-        form = ArticleForm(request.POST, request.FILES)
-        if form.is_valid():
-            # 进阶操作：将文章与当前登录的用户绑定
-            article = form.save(commit=False)
-            article.author = request.user 
-            article.save()
-            return redirect('article_list')
-            # 去掉原本的form.save()
-    else:
-        form = ArticleForm() # 如果是正常访问，给用户一个空表单
-    
-    return render(request, 'app_name/article_form.html', {'form': form})
-
-
-    if request.method == "POST":
-        form = ArticleForm(request.POST, request.FILES)
-        if form.is_valid():
-            # 进阶操作：将文章与当前登录的用户绑定
-            article = form.save(commit=False)
-            article.author = request.user 
-            article.save()
-            return redirect('article_list')
-    # ...
+from django.contrib.auth.models import User
+from .forms import StudentProfileForm, CollegePreferenceForm
+from .models import StudentProfile, University, Major, AdmissionScore, CollegePreference
+from django.db.models import Q, Avg
 
 @login_required
-def calendar_view(request, year=None, month=None):
-    """显示指定年月的日历，并标记有事件的日期"""
-    # 获取当前年月，或使用传入的参数
-    today = date.today()
-    current_year = year if year else today.year
-    current_month = month if month else today.month
-
-    # 生成指定年月的日历矩阵
-    cal = calendar.monthcalendar(current_year, current_month)
-    month_name = calendar.month_name[current_month]
-
-    # 查询这个月所有的当前用户的事件
-    events = CalendarEvent.objects.filter(
-        user=request.user,  # 只显示当前用户的事件
-        date__year=current_year,
-        date__month=current_month
-    )
-
-    # 创建一个字典，键为日期（天），值为当天的事件列表
-    event_dict = {}
-    for event in events:
-        day = event.date.day
-        if day not in event_dict:
-            event_dict[day] = []
-        # 安全地处理HTML，在模板中显示
-        event_info = f'<div class="event-tag {event.event_type}">{event.title}</div>'
-        event_dict[day].append(mark_safe(event_info))
-
-    # 准备日历数据，将事件信息嵌入
-    calendar_data = []
-    for week in cal:
-        week_data = []
-        for day in week:
-            if day == 0:
-                week_data.append({'day': '', 'events': []})
-            else:
-                week_data.append({
-                    'day': day,
-                    'events': event_dict.get(day, []),
-                    'is_today': (day == today.day and current_month == today.month and current_year == today.year)
-                })
-        calendar_data.append(week_data)
-
-    # 计算上个月和下个月
-    prev_month = current_month - 1 if current_month > 1 else 12
-    prev_year = current_year if current_month > 1 else current_year - 1
-    next_month = current_month + 1 if current_month < 12 else 1
-    next_year = current_year if current_month < 12 else current_year + 1
-
+def home(request):
+    """高考志愿填报助手首页"""
+    try:
+        profile = request.user.studentprofile
+    except StudentProfile.DoesNotExist:
+        profile = None
+    
     context = {
-        'calendar_data': calendar_data,
-        'month_name': month_name,
-        'year': current_year,
-        'month': current_month,
-        'prev_year': prev_year,
-        'prev_month': prev_month,
-        'next_year': next_year,
-        'next_month': next_month,
-        'today': today,
+        'profile': profile,
     }
-    return render(request, 'app_name/calendar.html', context)
+    return render(request, 'app_name/home.html', context)
+
+@login_required
+def student_profile_create(request):
+    """创建学生档案"""
+    try:
+        profile = request.user.studentprofile
+        return redirect('profile_detail')
+    except StudentProfile.DoesNotExist:
+        pass
+    
+    if request.method == 'POST':
+        form = StudentProfileForm(request.POST)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+            return redirect('home')
+    else:
+        form = StudentProfileForm()
+    
+    return render(request, 'app_name/profile_form.html', {'form': form})
+
+@login_required
+def profile_detail(request):
+    """查看学生档案"""
+    profile = get_object_or_404(StudentProfile, user=request.user)
+    return render(request, 'app_name/profile_detail.html', {'profile': profile})
+
+@login_required
+def university_list(request):
+    """大学列表"""
+    universities = University.objects.all()
+    
+    province_filter = request.GET.get('province')
+    type_filter = request.GET.get('type')
+    
+    if province_filter:
+        universities = universities.filter(province=province_filter)
+    if type_filter:
+        universities = universities.filter(university_type=type_filter)
+    
+    context = {
+        'universities': universities,
+        'province_filter': province_filter,
+        'type_filter': type_filter,
+    }
+    return render(request, 'app_name/university_list.html', context)
+
+@login_required
+def university_detail(request, pk):
+    """大学详情"""
+    university = get_object_or_404(University, pk=pk)
+    admission_scores = AdmissionScore.objects.filter(
+        university=university,
+        subject_type=request.user.studentprofile.subject_type
+    ).order_by('-year')[:5]
+    
+    context = {
+        'university': university,
+        'admission_scores': admission_scores,
+    }
+    return render(request, 'app_name/university_detail.html', context)
+
+@login_required
+def major_list(request):
+    """专业列表"""
+    majors = Major.objects.all()
+    category_filter = request.GET.get('category')
+    
+    if category_filter:
+        majors = majors.filter(category=category_filter)
+    
+    context = {
+        'majors': majors,
+        'category_filter': category_filter,
+    }
+    return render(request, 'app_name/major_list.html', context)
+
+@login_required
+def major_detail(request, pk):
+    """专业详情"""
+    major = get_object_or_404(Major, pk=pk)
+    context = {
+        'major': major,
+    }
+    return render(request, 'app_name/major_detail.html', context)
+
+@login_required
+def recommendation(request):
+    """志愿推荐"""
+    try:
+        profile = request.user.studentprofile
+    except StudentProfile.DoesNotExist:
+        return redirect('profile_create')
+    
+    # 根据分数推荐大学
+    recommended_universities = University.objects.filter(
+        admission_scores__province=profile.province,
+        admission_scores__subject_type=profile.subject_type,
+        admission_scores__min_score__lte=profile.total_score
+    ).distinct().order_by('-ranking')[:10]
+    
+    # 查看已填报的志愿
+    preferences = CollegePreference.objects.filter(
+        student=profile
+    ).order_by('preference_order')
+    
+    context = {
+        'profile': profile,
+        'recommended_universities': recommended_universities,
+        'preferences': preferences,
+    }
+    return render(request, 'app_name/recommendation.html', context)
+
+@login_required
+def preference_create(request):
+    """添加志愿"""
+    try:
+        profile = request.user.studentprofile
+    except StudentProfile.DoesNotExist:
+        return redirect('profile_create')
+    
+    if request.method == 'POST':
+        form = CollegePreferenceForm(request.POST)
+        if form.is_valid():
+            preference = form.save(commit=False)
+            preference.student = profile
+            preference.save()
+            return redirect('recommendation')
+    else:
+        form = CollegePreferenceForm()
+    
+    return render(request, 'app_name/preference_form.html', {'form': form})
+
+@login_required
+def preference_delete(request, pk):
+    """删除志愿"""
+    preference = get_object_or_404(CollegePreference, pk=pk, student__user=request.user)
+    preference.delete()
+    return redirect('recommendation')

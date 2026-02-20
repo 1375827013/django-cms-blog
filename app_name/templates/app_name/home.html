@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}高考志愿填报助手{% endblock %}
+{% block content %}
+<div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px; margin-bottom: 20px;">
+    <h2 id="clock" style="font-size: 48px; font-weight: bold; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);"></h2>
+    <p id="date" style="font-size: 18px; margin: 10px 0 0 0;"></p>
+</div>
+
+<script>
+function updateClock() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+    const weekday = weekdays[now.getDay()];
+    
+    document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+    document.getElementById('date').textContent = `${year}年${month}月${day}日 ${weekday}`;
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+</script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="text-center mb-4">高考志愿填报助手</h1>
+            
+            {% if profile %}
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">我的档案</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>姓名：</strong>{{ profile.name }}</p>
+                            <p><strong>省份：</strong>{{ profile.province }}</p>
+                            <p><strong>科类：</strong>{{ profile.subject_type }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>总分：</strong><span class="badge badge-success">{{ profile.total_score }}分</span></p>
+                            <p><strong>高考年份：</strong>{{ profile.year }}</p>
+                        </div>
+                    </div>
+                    {% if profile.chinese_score %}
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <p><strong>语文：</strong>{{ profile.chinese_score }}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>数学：</strong>{{ profile.math_score }}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>英语：</strong>{{ profile.english_score }}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>综合：</strong>{{ profile.comprehensive_score }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-warning text-center">
+                <h4>还没有创建学生档案</h4>
+                <p>请先创建档案，以便使用志愿推荐功能</p>
+                <a href="{% url 'profile_create' %}" class="btn btn-primary">创建档案</a>
+            </div>
+            {% endif %}
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h3>大学查询</h3>
+                            <p>查询全国大学信息</p>
+                            <a href="{% url 'university_list' %}" class="btn btn-primary btn-block">开始查询</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h3>专业查询</h3>
+                            <p>查询专业信息</p>
+                            <a href="{% url 'major_list' %}" class="btn btn-success btn-block">开始查询</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h3>志愿推荐</h3>
+                            <p>智能推荐志愿</p>
+                            <a href="{% url 'recommendation' %}" class="btn btn-info btn-block">查看推荐</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
