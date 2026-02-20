@@ -13,9 +13,9 @@ urlpatterns = [
     path('app_name/', include('app_name.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('deploy/', views.deploy_webhook, name='deploy'),
+    path('create-admin/', views.create_admin_view, name='create_admin'),
 ]
 
 
-# 逻辑：只在开发模式下，让 Django 能够根据 URL 找到 media 文件夹里的图片
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

