@@ -1,11 +1,316 @@
 {% extends "admin/base.html" %}
-{% load static %}
 
 {% block title %}{{ title }} | 高考志愿填报助手管理后台{% endblock %}
 
 {% block extrastyle %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="{% static 'css/admin_custom.css' %}">
+<style>
+/* ========================================
+   高考志愿填报助手 - Admin 后台美化样式
+   ======================================== */
+
+/* 全局样式重置 */
+:root {
+    --primary-color: #667eea;
+    --primary-dark: #764ba2;
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --success-color: #48bb78;
+    --warning-color: #ed8936;
+    --danger-color: #f56565;
+    --bg-color: #f7fafc;
+    --card-bg: #ffffff;
+    --text-primary: #2d3748;
+    --text-secondary: #718096;
+    --border-color: #e2e8f0;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* 整体背景 */
+body {
+    background: var(--bg-color) !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+}
+
+/* 头部导航栏 */
+#header {
+    background: var(--primary-gradient) !important;
+    box-shadow: var(--shadow-md) !important;
+    border: none !important;
+}
+
+#branding h1 {
+    margin: 0;
+    padding: 15px 20px;
+}
+
+#branding h1 a {
+    color: white !important;
+    font-size: 20px;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#branding h1 a:hover {
+    color: white !important;
+}
+
+/* 用户工具栏 */
+#user-tools {
+    color: rgba(255,255,255,0.9) !important;
+    font-size: 14px;
+    padding: 15px 20px;
+}
+
+#user-tools a {
+    color: white !important;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    transition: all 0.3s ease;
+}
+
+#user-tools a:hover {
+    border-bottom-color: white;
+    color: white !important;
+}
+
+/* 面包屑导航 */
+.breadcrumbs {
+    background: white;
+    border-bottom: 1px solid var(--border-color);
+    padding: 15px 20px;
+    box-shadow: var(--shadow-sm);
+}
+
+.breadcrumbs a {
+    color: var(--primary-color);
+}
+
+/* 主内容区域 */
+#content {
+    padding: 30px !important;
+}
+
+#content h1 {
+    color: var(--text-primary);
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+/* 表单样式 */
+.module {
+    background: var(--card-bg);
+    border: none;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 20px;
+}
+
+.module h2, .module caption {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 15px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 12px 12px 0 0;
+}
+
+.form-row {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.form-row:last-child {
+    border-bottom: none;
+}
+
+.aligned label {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="url"],
+select,
+textarea {
+    border: 2px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: #fafafa;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="url"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color) !important;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+/* 按钮样式 */
+.button,
+input[type="submit"],
+button {
+    background: var(--primary-gradient) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 10px 24px !important;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.button:hover,
+input[type="submit"]:hover,
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    color: white !important;
+}
+
+.button.default,
+input[type="submit"].default {
+    background: var(--success-color) !important;
+}
+
+.button.default:hover,
+input[type="submit"].default:hover {
+    background: #38a169 !important;
+    box-shadow: 0 8px 20px rgba(72, 187, 120, 0.4);
+}
+
+/* 表格样式 */
+.change-list .results {
+    background: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+#result_list {
+    border-collapse: collapse;
+}
+
+#result_list thead th {
+    background: var(--bg-color);
+    color: var(--text-primary);
+    font-weight: 600;
+    padding: 14px 16px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+#result_list tbody tr {
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.2s ease;
+}
+
+#result_list tbody tr:hover {
+    background: #f7fafc;
+}
+
+#result_list tbody td {
+    padding: 12px 16px;
+}
+
+#result_list a {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+/* 消息提示 */
+.messagelist li {
+    background: white;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 15px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.messagelist li.success {
+    border-left: 4px solid var(--success-color);
+    color: var(--success-color);
+}
+
+/* 分页 */
+.paginator {
+    background: var(--card-bg);
+    border: none;
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin-top: 20px;
+    box-shadow: var(--shadow-sm);
+}
+
+.paginator a {
+    color: var(--primary-color);
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.paginator a:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.paginator .this-page {
+    background: var(--primary-color);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+/* 侧边栏操作 */
+.object-tools {
+    margin-bottom: 20px;
+}
+
+.object-tools a {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.object-tools a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    color: white;
+}
+
+.object-tools a.addlink {
+    background: var(--success-color);
+}
+
+.object-tools a.addlink:hover {
+    background: #38a169;
+    box-shadow: 0 8px 20px rgba(72, 187, 120, 0.4);
+}
+</style>
 {% endblock %}
 
 {% block branding %}
