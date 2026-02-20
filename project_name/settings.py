@@ -139,7 +139,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/app_name/'
+LOGOUT_REDIRECT_URL = '/app_name/'
 
 PYTHONANYWHERE_API_TOKEN = 'f06aaa35de2008e9cb167d193c76fb607cb2cc59'
