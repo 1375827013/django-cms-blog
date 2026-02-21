@@ -13,7 +13,6 @@ urlpatterns = [
     path('app_name/', include('app_name.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('deploy/', views.deploy_webhook, name='deploy'),
-    path('deploy-full/', views.deploy_full, name='deploy_full'),
     path('create-admin/', views.create_admin_view, name='create_admin'),
 ]
 

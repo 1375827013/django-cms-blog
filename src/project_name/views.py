@@ -1,25 +1,11 @@
 import subprocess
 import os
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
 @csrf_exempt
 def deploy_webhook(request):
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Method not allowed'}, status=405)
-
-    deploy_token = os.getenv('DEPLOY_TOKEN', 'X7k9pQ2mR4vL8nJ3wT6yB5eA1cD9fG0h')
-    auth_header = request.headers.get('Authorization', '')
-    token = auth_header.replace('Token ', '')
-    if token != deploy_token:
-        return JsonResponse({'error': 'Unauthorized'}, status=401)
-
-    return JsonResponse({'status': 'test ok', 'message': 'deploy endpoint works'}, status=200)
-
-
-@csrf_exempt
-def deploy_full(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
