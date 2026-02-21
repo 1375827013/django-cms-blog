@@ -33,12 +33,16 @@ def deploy_webhook(request):
 
         subprocess.run([venv_python, os.path.join(src_dir, 'scripts', 'create_admin.py')], capture_output=True, text=True, cwd=src_dir)
 
-        import requests
-        api_url = "https://www.pythonanywhere.com/api/v0/user/8210232126/webapps/8210232126.pythonanywhere.com/reload/"
-        headers = {"Authorization": f"Token {settings.PYTHONANYWHERE_API_TOKEN}"}
-        r = requests.post(api_url, headers=headers)
-        if r.status_code != 200:
-            return JsonResponse({'warning': '部署完成但重载 API 调用失败，请手动重载'}, status=500)
+        api_token = settings.PYTHONANYWHERE_API_TOKEN or os.getenv('PYTHONANYWHERE_API_TOKEN', '')
+        if api_token:
+            import requests
+            api_url = "https://www.pythonanywhere.com/api/v0/user/8210232126/webapps/8210232126.pythonanywhere.com/reload/"
+            headers = {"Authorization": f"Token {api_token}"}
+            r = requests.post(api_url, headers=headers)
+            if r.status_code != 200:
+                return JsonResponse({'status': 'success', 'warning': '部署完成，请手动 Reload'}, status=200)
+        else:
+            return JsonResponse({'status': 'success', 'warning': '部署完成，请手动 Reload'}, status=200)
 
         return JsonResponse({'status': 'deployment successful'}, status=200)
 
