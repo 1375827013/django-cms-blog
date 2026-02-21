@@ -12,5 +12,6 @@ import os
 from django.core.wsgi import get_wsgi_application
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project_name.settings")
+os.environ.setdefault("DEPLOY_TOKEN", "X7k9pQ2mR4vL8nJ3wT6yB5eA1cD9fG0h")
 
 application = get_wsgi_application()
