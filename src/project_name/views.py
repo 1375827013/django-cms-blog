@@ -20,17 +20,32 @@ def deploy_webhook(request):
         src_dir = os.path.join(project_dir, 'src')
         os.chdir(project_dir)
 
-        subprocess.run(['git', 'fetch', 'origin'], check=True, capture_output=True, text=True)
-        subprocess.run(['git', 'reset', '--hard', 'origin/main'], check=True, capture_output=True, text=True)
+        result = subprocess.run(['git', 'fetch', 'origin'], capture_output=True, text=True)
+        if result.returncode != 0:
+            return JsonResponse({'error': f'git fetch failed: {result.stderr}'}, status=500)
+
+        result = subprocess.run(['git', 'reset', '--hard', 'origin/main'], capture_output=True, text=True)
+        if result.returncode != 0:
+            return JsonResponse({'error': f'git reset failed: {result.stderr}'}, status=500)
 
         venv_python = os.path.join(project_dir, 'myenv', 'bin', 'python')
-        subprocess.run([venv_python, '-m', 'pip', 'install', '-r', os.path.join(src_dir, 'requirements.txt')], check=True)
+        req_file = os.path.join(src_dir, 'requirements.txt')
+        result = subprocess.run([venv_python, '-m', 'pip', 'install', '-r', req_file], capture_output=True, text=True)
+        if result.returncode != 0:
+            return JsonResponse({'error': f'pip install failed: {result.stderr}'}, status=500)
 
-        subprocess.run([venv_python, os.path.join(src_dir, 'manage.py'), 'migrate'], check=True, cwd=src_dir)
+        manage_py = os.path.join(src_dir, 'manage.py')
+        result = subprocess.run([venv_python, manage_py, 'migrate'], capture_output=True, text=True, cwd=src_dir)
+        if result.returncode != 0:
+            return JsonResponse({'error': f'migrate failed: {result.stderr}'}, status=500)
 
-        subprocess.run([venv_python, os.path.join(src_dir, 'manage.py'), 'collectstatic', '--noinput'], check=True, cwd=src_dir)
+        result = subprocess.run([venv_python, manage_py, 'collectstatic', '--noinput'], capture_output=True, text=True, cwd=src_dir)
+        if result.returncode != 0:
+            return JsonResponse({'error': f'collectstatic failed: {result.stderr}'}, status=500)
 
-        subprocess.run([venv_python, os.path.join(src_dir, 'scripts', 'create_admin.py')], capture_output=True, text=True, cwd=src_dir)
+        create_admin_script = os.path.join(src_dir, 'scripts', 'create_admin.py')
+        if os.path.exists(create_admin_script):
+            subprocess.run([venv_python, create_admin_script], capture_output=True, text=True, cwd=src_dir)
 
         api_token = settings.PYTHONANYWHERE_API_TOKEN or os.getenv('PYTHONANYWHERE_API_TOKEN', '')
         if api_token:
@@ -40,13 +55,10 @@ def deploy_webhook(request):
             r = requests.post(api_url, headers=headers)
             if r.status_code != 200:
                 return JsonResponse({'status': 'success', 'warning': '部署完成，请手动 Reload'}, status=200)
+            return JsonResponse({'status': 'deployment successful'}, status=200)
         else:
             return JsonResponse({'status': 'success', 'warning': '部署完成，请手动 Reload'}, status=200)
 
-        return JsonResponse({'status': 'deployment successful'}, status=200)
-
-    except subprocess.CalledProcessError as e:
-        return JsonResponse({'error': e.stderr}, status=500)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
