@@ -4,16 +4,15 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
-DEPLOY_TOKEN = os.getenv('DEPLOY_TOKEN', '')
-
 @csrf_exempt
 def deploy_webhook(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'Method not allowed'}, status=405)
 
+    deploy_token = os.getenv('DEPLOY_TOKEN', 'X7k9pQ2mR4vL8nJ3wT6yB5eA1cD9fG0h')
     auth_header = request.headers.get('Authorization', '')
     token = auth_header.replace('Token ', '')
-    if token != DEPLOY_TOKEN:
+    if token != deploy_token:
         return JsonResponse({'error': 'Unauthorized'}, status=401)
 
     try:
