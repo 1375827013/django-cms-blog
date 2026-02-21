@@ -55,7 +55,7 @@ ROOT_URLCONF = "project_name.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [BASE_DIR / "web_assets/templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -124,7 +124,7 @@ USE_TZ = True
 
 # 1. 静态资源（开发用的 CSS, JS, 装饰图）
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'web_assets/static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # 2. 媒体资源（用户上传的图片、附件）
