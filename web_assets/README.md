@@ -3,6 +3,12 @@
 这个文件夹包含所有与网页相关的文件：
 
 ## 目录结构
+- `app_name/` - Django 应用核心文件
+  - `admin.py` - 管理后台配置
+  - `models.py` - 数据模型
+  - `views.py` - 视图函数
+  - `urls.py` - URL 路由
+  - `templates/` - 应用模板
 - `templates/` - Django 模板文件
   - `admin/` - 管理后台模板
   - `registration/` - 注册相关模板
