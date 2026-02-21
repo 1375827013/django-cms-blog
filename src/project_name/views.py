@@ -18,19 +18,20 @@ def deploy_webhook(request):
 
     try:
         project_dir = '/home/8210232126/django-cms-blog'
+        src_dir = os.path.join(project_dir, 'src')
         os.chdir(project_dir)
 
         subprocess.run(['git', 'fetch', 'origin'], check=True, capture_output=True, text=True)
         subprocess.run(['git', 'reset', '--hard', 'origin/main'], check=True, capture_output=True, text=True)
 
         venv_python = os.path.join(project_dir, 'myenv', 'bin', 'python')
-        subprocess.run([venv_python, '-m', 'pip', 'install', '-r', 'requirements.txt'], check=True)
+        subprocess.run([venv_python, '-m', 'pip', 'install', '-r', os.path.join(src_dir, 'requirements.txt')], check=True)
 
-        subprocess.run([venv_python, 'manage.py', 'migrate'], check=True)
+        subprocess.run([venv_python, os.path.join(src_dir, 'manage.py'), 'migrate'], check=True, cwd=src_dir)
 
-        subprocess.run([venv_python, 'manage.py', 'collectstatic', '--noinput'], check=True)
+        subprocess.run([venv_python, os.path.join(src_dir, 'manage.py'), 'collectstatic', '--noinput'], check=True, cwd=src_dir)
 
-        subprocess.run([venv_python, 'create_admin.py'], capture_output=True, text=True)
+        subprocess.run([venv_python, os.path.join(src_dir, 'scripts', 'create_admin.py')], capture_output=True, text=True, cwd=src_dir)
 
         import requests
         api_url = "https://www.pythonanywhere.com/api/v0/user/8210232126/webapps/8210232126.pythonanywhere.com/reload/"
