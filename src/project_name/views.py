@@ -1,6 +1,6 @@
 import subprocess
 import os
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
@@ -15,52 +15,7 @@ def deploy_webhook(request):
     if token != deploy_token:
         return JsonResponse({'error': 'Unauthorized'}, status=401)
 
-    try:
-        project_dir = '/home/8210232126/django-cms-blog'
-        src_dir = os.path.join(project_dir, 'src')
-        os.chdir(project_dir)
-
-        result = subprocess.run(['git', 'fetch', 'origin'], capture_output=True, text=True)
-        if result.returncode != 0:
-            return JsonResponse({'error': f'git fetch failed: {result.stderr}'}, status=500)
-
-        result = subprocess.run(['git', 'reset', '--hard', 'origin/main'], capture_output=True, text=True)
-        if result.returncode != 0:
-            return JsonResponse({'error': f'git reset failed: {result.stderr}'}, status=500)
-
-        venv_python = os.path.join(project_dir, 'myenv', 'bin', 'python')
-        req_file = os.path.join(src_dir, 'requirements.txt')
-        result = subprocess.run([venv_python, '-m', 'pip', 'install', '-r', req_file], capture_output=True, text=True)
-        if result.returncode != 0:
-            return JsonResponse({'error': f'pip install failed: {result.stderr}'}, status=500)
-
-        manage_py = os.path.join(src_dir, 'manage.py')
-        result = subprocess.run([venv_python, manage_py, 'migrate'], capture_output=True, text=True, cwd=src_dir)
-        if result.returncode != 0:
-            return JsonResponse({'error': f'migrate failed: {result.stderr}'}, status=500)
-
-        result = subprocess.run([venv_python, manage_py, 'collectstatic', '--noinput'], capture_output=True, text=True, cwd=src_dir)
-        if result.returncode != 0:
-            return JsonResponse({'error': f'collectstatic failed: {result.stderr}'}, status=500)
-
-        create_admin_script = os.path.join(src_dir, 'scripts', 'create_admin.py')
-        if os.path.exists(create_admin_script):
-            subprocess.run([venv_python, create_admin_script], capture_output=True, text=True, cwd=src_dir)
-
-        api_token = settings.PYTHONANYWHERE_API_TOKEN or os.getenv('PYTHONANYWHERE_API_TOKEN', '')
-        if api_token:
-            import requests
-            api_url = "https://www.pythonanywhere.com/api/v0/user/8210232126/webapps/8210232126.pythonanywhere.com/reload/"
-            headers = {"Authorization": f"Token {api_token}"}
-            r = requests.post(api_url, headers=headers)
-            if r.status_code != 200:
-                return JsonResponse({'status': 'success', 'warning': '部署完成，请手动 Reload'}, status=200)
-            return JsonResponse({'status': 'deployment successful'}, status=200)
-        else:
-            return JsonResponse({'status': 'success', 'warning': '部署完成，请手动 Reload'}, status=200)
-
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'status': 'test ok', 'message': 'deploy endpoint works'}, status=200)
 
 
 @csrf_exempt
