@@ -47,6 +47,12 @@ def deploy_webhook(request):
         if os.path.exists(create_admin_script):
             subprocess.run([venv_python, create_admin_script], capture_output=True, text=True, cwd=src_dir)
 
+        import_script = os.path.join(src_dir, 'scripts', 'import_from_json.py')
+        if os.path.exists(import_script):
+            result = subprocess.run([venv_python, import_script], capture_output=True, text=True, cwd=src_dir)
+            if result.returncode != 0:
+                return JsonResponse({'warning': f'data import had issues: {result.stderr}', 'status': 'deployment successful, please reload manually'}, status=200)
+
         return JsonResponse({'status': 'deployment successful, please reload manually'}, status=200)
 
     except Exception as e:
