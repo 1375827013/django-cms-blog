@@ -1,5 +1,6 @@
 import subprocess
 import os
+import requests
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
@@ -51,8 +52,19 @@ def deploy_webhook(request):
         if os.path.exists(import_script):
             result = subprocess.run([venv_python, import_script], capture_output=True, text=True, cwd=src_dir)
             if result.returncode != 0:
-                return JsonResponse({'warning': f'data import had issues: {result.stderr}', 'status': 'deployment successful, please reload manually'}, status=200)
+                return JsonResponse({'warning': f'data import had issues: {result.stderr}', 'status': 'deployment successful'}, status=200)
 
+        api_token = os.getenv('PYTHONANYWHERE_API_TOKEN')
+        username = '8210232126'
+        domain = '8210232126.pythonanywhere.com'
+        
+        if api_token:
+            reload_url = f'https://www.pythonanywhere.com/api/v0/user/{username}/webapps/{domain}/reload/'
+            headers = {'Authorization': f'Token {api_token}'}
+            reload_response = requests.post(reload_url, headers=headers)
+            if reload_response.status_code == 200:
+                return JsonResponse({'status': 'deployment successful, auto-reloaded'}, status=200)
+        
         return JsonResponse({'status': 'deployment successful, please reload manually'}, status=200)
 
     except Exception as e:
