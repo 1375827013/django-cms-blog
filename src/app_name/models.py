@@ -118,3 +118,48 @@ class CollegePreference(models.Model):
 
     def __str__(self):
         return f"第{self.preference_order}志愿: {self.university.name}"
+
+class KaoyanSchool(models.Model):
+    dm = models.CharField('院校代码', max_length=20, unique=True)
+    mc = models.CharField('院校名称', max_length=100)
+    province_code = models.CharField('省份代码', max_length=10, blank=True)
+    href = models.TextField('链接', blank=True)
+    created_at = models.DateTimeField('创建时间', auto_now_add=True)
+    updated_at = models.DateTimeField('更新时间', auto_now=True)
+
+    class Meta:
+        verbose_name = '考研院校'
+        verbose_name_plural = '考研院校'
+        db_table = 'schools'
+        managed = False
+
+    def __str__(self):
+        return self.mc
+
+class KaoyanProvince(models.Model):
+    code = models.CharField('省份代码', max_length=10, unique=True)
+    name = models.CharField('省份名称', max_length=50)
+    created_at = models.DateTimeField('创建时间', auto_now_add=True)
+
+    class Meta:
+        verbose_name = '省份'
+        verbose_name_plural = '省份'
+        db_table = 'provinces'
+        managed = False
+
+    def __str__(self):
+        return self.name
+
+class KaoyanCategory(models.Model):
+    dm = models.CharField('类别代码', max_length=10)
+    mc = models.CharField('类别名称', max_length=100)
+    created_at = models.DateTimeField('创建时间', auto_now_add=True)
+
+    class Meta:
+        verbose_name = '专业类别'
+        verbose_name_plural = '专业类别'
+        db_table = 'categories'
+        managed = False
+
+    def __str__(self):
+        return self.mc
