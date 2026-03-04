@@ -28,6 +28,8 @@ media/
 staticfiles/
 
 .env
+.env.local
+streamlit.env
 .venv
 env/
 venv/
