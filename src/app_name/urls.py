@@ -12,4 +12,7 @@ urlpatterns = [
     path('recommendation/', views.recommendation, name='recommendation'),
     path('preference/add/', views.preference_create, name='preference_create'),
     path('preference/<int:pk>/delete/', views.preference_delete, name='preference_delete'),
+    path('kaoyan/schools/', views.kaoyan_school_list, name='kaoyan_school_list'),
+    path('kaoyan/schools/<str:dm>/', views.kaoyan_school_detail, name='kaoyan_school_detail'),
+    path('kaoyan/categories/', views.kaoyan_category_list, name='kaoyan_category_list'),
 ]

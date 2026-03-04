@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q
 from .forms import StudentProfileForm, CollegePreferenceForm
-from .models import StudentProfile, University, Major, AdmissionScore, CollegePreference
+from .models import StudentProfile, University, Major, AdmissionScore, CollegePreference, KaoyanSchool, KaoyanProvince, KaoyanCategory
 
 def home(request):
     """高考志愿填报助手首页"""
@@ -164,3 +165,50 @@ def preference_delete(request, pk):
     preference.delete()
     messages.success(request, '志愿删除成功！')
     return redirect('recommendation')
+
+def kaoyan_school_list(request):
+    """考研院校列表"""
+    schools = KaoyanSchool.objects.all()
+    
+    province_filter = request.GET.get('province', '')
+    search = request.GET.get('search', '')
+    
+    if province_filter:
+        schools = schools.filter(province_code=province_filter)
+    if search:
+        schools = schools.filter(Q(mc__icontains=search) | Q(dm__icontains=search))
+    
+    provinces = KaoyanProvince.objects.all()
+    
+    context = {
+        'schools': schools[:100],
+        'provinces': provinces,
+        'province_filter': province_filter,
+        'search': search,
+    }
+    return render(request, 'app_name/kaoyan_school_list.html', context)
+
+def kaoyan_school_detail(request, dm):
+    """考研院校详情"""
+    school = get_object_or_404(KaoyanSchool, dm=dm)
+    
+    province = None
+    if school.province_code:
+        try:
+            province = KaoyanProvince.objects.get(code=school.province_code)
+        except KaoyanProvince.DoesNotExist:
+            pass
+    
+    context = {
+        'school': school,
+        'province': province,
+    }
+    return render(request, 'app_name/kaoyan_school_detail.html', context)
+
+def kaoyan_category_list(request):
+    """专业类别列表"""
+    categories = KaoyanCategory.objects.all()
+    context = {
+        'categories': categories,
+    }
+    return render(request, 'app_name/kaoyan_category_list.html', context)
