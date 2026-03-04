@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}{{ school.mc }} - 考研院校详情{% endblock %}
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">首页</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'kaoyan_school_list' %}">考研院校</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ school.mc }}</li>
+        </ol>
+    </nav>
+    
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2>{{ school.mc }}</h2>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <tr>
+                    <th width="20%">院校代码</th>
+                    <td>{{ school.dm }}</td>
+                </tr>
+                <tr>
+                    <th>院校名称</th>
+                    <td><strong>{{ school.mc }}</strong></td>
+                </tr>
+                <tr>
+                    <th>省份</th>
+                    <td>{{ province.name|default:"未知" }}</td>
+                </tr>
+                {% if school.href %}
+                <tr>
+                    <th>相关链接</th>
+                    <td><a href="{{ school.href }}" target="_blank">{{ school.href }}</a></td>
+                </tr>
+                {% endif %}
+            </table>
+            
+            <div class="mt-3">
+                <a href="{% url 'kaoyan_school_list' %}" class="btn btn-secondary">返回列表</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
