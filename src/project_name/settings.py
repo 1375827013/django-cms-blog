@@ -75,8 +75,12 @@ WSGI_APPLICATION = "project_name.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "postgres",
+        "USER": "postgres",
+        "PASSWORD": os.getenv('DB_PASSWORD', ''),
+        "HOST": "db.xgwgtlealmcynvizozfd.supabase.co",
+        "PORT": "5432",
     }
 }
 
@@ -105,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # 'zh-hans' 表示简体中文，这将影响Django后台、表单验证消息等的显示语言
-LANGUAGE_CODE = 'zh-hans'   #第105行
+LANGUAGE_CODE = 'zh-hans'
 
 # 时区设置
 # 'Asia/Shanghai' 代表中国标准时间（北京时间），即东八区（UTC+8）
