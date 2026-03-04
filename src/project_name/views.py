@@ -29,7 +29,10 @@ def deploy_webhook(request):
         if result.returncode != 0:
             return JsonResponse({'error': f'git reset failed: {result.stderr}'}, status=500)
 
-        venv_python = os.path.join(project_dir, 'myenv', 'bin', 'python')
+        venv_python = '/usr/bin/python3'
+        if os.path.exists(os.path.join(project_dir, 'myenv', 'bin', 'python')):
+            venv_python = os.path.join(project_dir, 'myenv', 'bin', 'python')
+        
         req_file = os.path.join(src_dir, 'requirements.txt')
         result = subprocess.run([venv_python, '-m', 'pip', 'install', '-r', req_file], capture_output=True, text=True)
         if result.returncode != 0:
@@ -68,7 +71,7 @@ def deploy_webhook(request):
         return JsonResponse({'status': 'deployment successful, please reload manually'}, status=200)
 
     except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+        return JsonResponse({'error': str(e)}, status=500})
 
 
 @csrf_exempt
@@ -78,31 +81,3 @@ def create_admin_view(request):
     
     from django.contrib.auth import get_user_model
     User = get_user_model()
-    
-    username = 'admin'
-    password = 'admin123456'
-    email = 'admin@example.com'
-    
-    try:
-        if User.objects.filter(username=username).exists():
-            user = User.objects.get(username=username)
-            user.set_password(password)
-            user.save()
-            return JsonResponse({
-                'status': 'password reset',
-                'username': username,
-                'password': password
-            })
-        else:
-            User.objects.create_superuser(
-                username=username,
-                email=email,
-                password=password
-            )
-            return JsonResponse({
-                'status': 'created',
-                'username': username,
-                'password': password
-            })
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
